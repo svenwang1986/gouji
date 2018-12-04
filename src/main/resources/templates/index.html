@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Access-Control-Allow-Origin" content="*">
+<title>Welcome !</title>
+    <meta content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+ <script src="http://libs.baidu.com/jquery/1.9.1/jquery.min.js"></script>
+ <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<style>
+    .desk ul,.buffer ul,.cards ul{
+        list-style: none;
+    }
+    .desk ul li,.buffer ul li,.cards ul li{
+        display:inline-block;
+        text-align: left;
+        padding-left:2px;
+        height:60px;
+        width:40px;
+        border:1px solid darkgreen;
+        background-color:white;
+        margin-left:-19px;
+        border-radius: .25rem;
+    }
+
+    .cards ul li{
+        float:left;
+    }
+    .cards ul li.checked{
+        margin-top:-20px;
+        border-color:red;
+    }
+
+</style>
+</head>
+<body class="container" style="padding-top:20px;">
+
+<div class="row">
+
+<div class="col-md-6">
+
+<div id= "loginDiv" class="container">
+    <div class="form-group">
+        <label for="nickname">Your nickname</label>
+        <input class="form-control" id="nickname" placeholder="Enter your nickname" onkeyup="this.value=this.value.replace(/[^a-zA-Z]/g,'')" >
+    </div>
+
+    <button id="loginBtn" type="button" class="btn btn-primary">保存</button>
+
+</div>
+
+<!--room list Div start-->
+<div id= "roomListDIV" class="container d-none" style="margin-top: 20px;">
+<div class="align-middle">
+ <button  type="button" class="btn btn-primary btn-lg btn-block" data-toggle="modal" data-target="#createRoomModal"> 创建游戏 </button>
+</div>
+</div>
+<!--room list Div end-->
+
+
+<!--room Div start-->
+<div id= "roomDIV" class="container p-1 d-none">
+    <table class="table table-bordered" >
+        <tbody>
+        <tr>
+            <td colspan="4" align="center">
+                <div id="player4">
+
+                    <div class="cards">
+                        <ul>
+                        </ul>
+                    </div>
+                    <div class="username"></div>
+                    <div class="desk">
+                        <ul class="cards-ul">
+                        </ul>
+                    </div>
+                </div>
+
+            </td>
+        </tr>
+        <tr>
+            <td align="center">
+                <div id="player5">
+                    <div class="desk">
+                        <ul class="cards-ul">
+                        </ul>
+                    </div>
+                    <div class="cards">
+                        <ul>
+                        </ul>
+                    </div>
+                    <div class="username"></div>
+                </div>
+            </td>
+            <td rowspan="2" colspan="2" align="center">
+
+                <div id="desktop">
+
+                    <button id="startGameBtn" type="button" class="btn btn-primary">开牌</button>
+
+                </div>
+
+            </td>
+            <td align="center">
+                <div id="player3" class="">
+                    <div class="desk">
+                        <ul class="cards-ul">
+                        </ul>
+                    </div>
+                    <div class="cards">
+                        <ul>
+                        </ul>
+                    </div>
+                    <div class="username"></div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td align="center">
+                <div id="player6">
+                    <div class="desk">
+                        <ul class="cards-ul">
+                        </ul>
+                    </div>
+                    <div class="cards">
+                        <ul>
+                        </ul>
+                    </div>
+                    <div class="username"></div>
+                </div>
+            </td>
+            <td align="center">
+                <div id="player2">
+                    <div class="desk">
+                        <ul class="cards-ul">
+                        </ul>
+                    </div>
+                    <div class="cards">
+                        <ul>
+                        </ul>
+                    </div>
+                    <div class="username"></div>
+                </div>
+
+            </td>
+        </tr>
+        <tr>
+            <td colspan="4" align="center">
+                <div id="player1" class="player">
+                    <div class="desk">
+                        <ul class="cards-ul">
+                        </ul>
+                    </div>
+                    <div class="cards" >
+                        <ul class="cards-ul">
+                        </ul>
+                    </div>
+                    <div style="clear:both;">
+                        <button id="shaoBtn" type="button" class="btn btn-secondary btn-sm">烧</button>
+                        <button id="passBtn" type="button" class="btn btn-secondary btn-sm">扣牌</button>
+                        <button id="fetchBackBtn" type="button" class="btn btn-secondary btn-sm">收回</button>
+                        <button id="noBtn" type="button" class="btn btn-danger btn-sm">不要</button>
+                        <button id="rangBtn" type="button" class="btn btn-warning btn-sm">让牌</button>
+                        <button id="attackBtn" type="button" class="btn btn-success btn-sm">出牌</button>
+                    </div>
+                    <div class="username" style="clear: both;"></div>
+                </div>
+
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+
+</div>
+<!--room Div end-->
+
+</div>
+<div class="col-md-6">
+
+   <div class="msglist"></div>
+</div>
+
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="createRoomModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+ <div class="modal-dialog" role="document">
+  <div class="modal-content">
+   <div class="modal-header">
+    <h5 class="modal-title" id="exampleModalLabel">start a new game </h5>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+     <span aria-hidden="true">&times;</span>
+    </button>
+   </div>
+   <div class="modal-body">
+    <div class="form-group">
+     <label for="roomName">Room's Name</label>
+     <input class="form-control" id="roomName" aria-describedby="enter a name for room" >
+     <!--<small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>-->
+    </div>
+    <div class="form-group">
+     <label for="roomPassword">Password</label>
+     <input class="form-control" id="roomPassword" >
+    </div>
+   </div>
+   <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+    <button id="startNewGameBtn" type="button" class="btn btn-primary"> Create </button>
+   </div>
+  </div>
+ </div>
+</div>
+
+<script src="https://cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+<script src="https://cdn.bootcss.com/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://cdn.bootcss.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</body>
+
+<script>
+
+    var apiHost = "";
+
+    $( document ).ready(function(){
+
+        $.ajaxSetup({
+            type: "GET",
+            async: false,
+            cache: false,
+            dataType: "JSON",
+            error: function(jqXHR, textStatus, errorThrown){
+                switch (jqXHR.status){
+                    case(500):
+                        console.error("服务器系统内部错误");
+                        break;
+                    case(401):
+                        console.error("未登录");
+                        break;
+                    case(403):
+                        console.error("无权限执行此操作");
+                        break;
+                    case(408):
+                        console.error("请求超时");
+                        break;
+                    default:
+                        console.error("未知错误");
+                }
+            }
+
+        });
+
+        //消息ID
+        var msgId = 0;
+
+        //check user name existed?
+        var userName = $.cookie('china-ys-card-user-name');
+
+        if(userName==null || userName == ""){
+
+            $('#loginDiv').removeClass('d-none');
+            $('#roomListDIV').addClass('d-none');
+
+        }else{
+
+            //$('#loginDiv').addClass('d-none');
+            $('#roomListDIV').removeClass('d-none');
+            $('#nickname').val(userName);
+        }
+        
+        
+        $('#loginBtn').click(function () {
+            var userNameInput = $('#nickname').val();
+            $.cookie('china-ys-card-user-name',userNameInput);
+            alert("OK");
+            window.location.reload();
+
+        });
+
+
+        var bindCardClickEvent = function () {
+            $('ul.cards-ul li').each(function () {
+                $(this).on('click',function(){
+
+//                    var buffer = $(this).closest('.player').children('.buffer');
+//                    $(this).detach().appendTo($(buffer).children());
+
+                    //如果是点击的手中的扑克
+                    if($(this).hasClass('card-in-hand')){
+                        $(this).toggleClass('checked');
+                    }else{
+                        //从其它地方点的扑克，默认加到自己面板上，点击回收后进行回收操作
+                        var currentUserDesk = $('#player1 .desk .cards-ul');
+                        //console.info(currentUserDesk);
+                        $(this).detach().appendTo($(currentUserDesk));
+
+                    }
+
+
+                });
+            });
+        };
+
+        var bindEnterRoom = function(){
+            $('.enterRoomBtn').click(function(){
+                var roomName = $(this).data('roomname');
+                var password = $('#enterRoomPassword').val();
+                $.get(apiHost + '/api/enterRoom?name='+roomName+'&pass='+password+'&userName='+userName,function(res){
+
+                    if(res._name){
+
+                        $('#enterRoomPassword').removeClass('border border-danger');
+                        //enter the room
+                        $('#roomListDIV').addClass('d-none');
+                        $('#loginDiv').addClass('d-none');
+                        $('#roomDIV').removeClass('d-none');
+
+
+                        //开始处理玩家列表，将当前用户放在player1的位置
+                        var index = -1;
+                        for(var i = 0;i<res._players.length;i++){
+                            //console.info(userName);
+                            if(userName == res._players[i]._name){
+                                index = i;
+                                break;
+                            }
+                        }
+
+                        var offset = 6-index ;
+
+                        for (var i = 0;i< res._players.length;i++){
+
+                            var player = res._players[i];
+
+                            var playerNumber = (i+offset) % 6 +1;
+
+                            $('#roomDIV #player'+playerNumber+' .username').empty().append(player._name);
+
+                            $('#roomDIV #player'+playerNumber+' .username').attr('data-username',player._name);
+
+                        }
+
+                        setInterval(loopCheck, 1000);
+                        setInterval(refreshMsg, 1000);
+
+
+                    }else{
+                       //密码错误
+                        $('#enterRoomPassword').addClass('border border-danger');
+
+                    }
+                });
+            });
+        };
+
+        var showRooms = function (rooms) {
+            var room = rooms[0];
+            html = "<div class='room card w-90'>";
+            html += "<div class='card-body' >"+ '<h5 class="card-title">'+room._name+"</h5>";
+
+            html += '<p class="card-text">Wish you have a happy time .</p>';
+            html += "<div class='form-inline'>" +
+                "<div class=\"form-group mb-2\">"+
+                "<input id='enterRoomPassword' class=\"form-control\" placeholder='password'></div> " +
+                "<button class='btn btn-primary enterRoomBtn mb-2' data-roomname='"+room._name+"'> Enter </button></div>";
+            html += "</div>";
+            html += "</div>";
+
+            $('#roomListDIV').empty().append(html);
+
+
+            bindEnterRoom();
+
+        }
+
+        //bink the btn event
+       $('#startNewGameBtn').click(function(){
+
+           var name = $('#roomName').val();
+           var pass = $('#roomPassword').val();
+
+          $.get(apiHost+'/api/createRoom?name='+name+'&pass='+pass,function(res){
+
+              $('#createRoomModal').modal('hide');
+
+              showRooms(res);
+
+          });
+
+       });
+
+
+
+        //处理扑克牌列表
+        var handleUserCards = function(res){
+
+            if(res!=undefined &&res.cards !=undefined){
+
+                var cards = res.cards;
+                var cardsLi = "";
+                for(var i = 0 ;i < cards.length; i++){
+                    cardsLi += "<li class='card-in-hand' data-id='"+cards[i]._id+"'>"+cards[i]._number+"</li>";
+                }
+
+                $('#roomDIV #player1 .cards .cards-ul').empty().append(cardsLi);
+
+                $('#startGameBtn').addClass('d-none');
+
+            }
+
+            if(res!=undefined && res.deskCards!=undefined){
+                var deskCards = res.deskCards;
+
+                //处理桌牌列表
+                var deskCardsLi = "";
+                for(var i =0;i<deskCards.length;i++){
+                    deskCardsLi += "<li class='card-in-desk' data-id='"+deskCards[i]._id+"'>"+deskCards[i]._number+"</li>";
+                }
+
+                $('#roomDIV #player1 .desk .cards-ul').empty().append(deskCardsLi);
+            }
+
+            //bindCardClickEvent();
+        };
+
+
+        $('#startGameBtn').click(function () {
+            $.get(apiHost+'/api/start?userName='+userName, function (res) {
+
+                handleUserCards(res);
+            });
+        });
+        
+
+        /**
+         * 确认回收扑克，请求网络接口，将目前的扑克加入自己的扑克队列，并重新刷新当前用户的手牌和桌面上的牌
+         */
+        $('#fetchBackBtn').click(function () {
+            var cardIds = "";
+            $('#player1 .desk .cards-ul li').each(function () {
+                cardIds += $(this).data("id")+",";
+            });
+
+
+            if(cardIds == ""){
+                return ;
+            }
+
+            cardIds = cardIds.substring(0,cardIds.length-1);
+
+            $.get(apiHost+'/api/fetchBack?cardIds='+cardIds+'&userName='+userName,function (res) {
+
+                //返回的是手中的扑克队列和桌面上的数据
+                handleUserCards(res);
+
+            });
+        });
+
+
+        $('#attackBtn').click(function () {
+            var cardIds = "";
+            $('#player1 .cards .cards-ul li.checked').each(function () {
+                cardIds += $(this).data("id")+",";
+            });
+
+
+            if(cardIds == ""){
+                return ;
+            }
+
+            cardIds = cardIds.substring(0,cardIds.length-1);
+
+            $.get(apiHost+'/api/attack?cardIds='+cardIds+'&userName='+userName,function (res) {
+
+                //返回的是手中的扑克队列和桌面上的数据
+                handleUserCards(res);
+
+            });
+
+
+        });
+
+        $('#passBtn').click(function () {
+
+
+            $.get(apiHost+'/api/pass?userName='+userName,function (res) {
+
+                //返回的是手中的扑克队列和桌面上的数据
+                handleUserCards(res);
+
+            });
+
+
+        });
+
+
+        $('#shaoBtn').click(function () {
+
+
+            $.get(apiHost+'/api/sendMsg?userName='+userName+'&msg=烧牌',function (res) {
+
+
+            });
+
+
+        });
+
+        $('#noBtn').click(function () {
+
+
+            $.get(apiHost+'/api/sendMsg?userName='+userName+'&msg=不要',function (res) {
+
+
+            });
+
+
+        });
+
+        $('#rangBtn').click(function () {
+
+
+            $.get(apiHost+'/api/sendMsg?userName='+userName+'&msg=让牌',function (res) {
+
+
+            });
+
+
+        });
+
+
+        //load the room list
+
+        $.get(apiHost+'/api/rooms?userName='+userName,function(res){
+
+            if(res.length == 0){
+                console.info("now rooms ,create one ?");
+                return ;
+            }
+
+            showRooms(res);
+
+
+        });
+
+
+        var refreshMsg = function () {
+
+            var url = apiHost + '/api/msg?msgId=' +msgId;
+
+            $.get(url, function (res) {
+
+                console.info(res);
+
+                if(res == null){
+
+                    return ;
+                }
+
+                if(res.msgList != undefined && res.msgList.length > 0){
+
+                    msgId = res.msgId;
+
+                    for (var i = 0 ; i<res.msgList.length;i++){
+                        $(".msglist").prepend(res.msgList[i]+ "<br>");
+                    }
+                }
+
+            });
+
+        };
+
+
+
+        var version = 0;
+
+        var loopCheck = function(){
+
+            var url = apiHost + '/api/loopCheck?version='+version;
+
+            $.get(url,function (res) {
+
+                if(res.version != undefined){
+
+                    version = res.version;
+
+                    var room = res.room;
+
+                    //开始处理玩家列表，将当前用户放在player1的位置
+                    var index = -1;
+                    for(var i = 0;i<room._players.length;i++){
+                        if(userName == room._players[i]._name){
+                            index = i;
+                            break;
+                        }
+                    }
+
+                    var offset = 6-index ;
+
+                    for (var i = 0;i< room._players.length;i++){
+
+                        var player = room._players[i];
+
+                        var playerNumber = (i+offset) % 6 +1;
+
+                        if($('#roomDIV #player'+playerNumber+' .username').attr('data-username') == undefined){
+
+                            $('#roomDIV #player'+playerNumber+' .username').empty().append(player._name);
+
+                            $('#roomDIV #player'+playerNumber+' .username').attr('data-username',player._name);
+                        }
+
+
+
+                    }
+
+
+                    var UserDesktopMap = res.UserDesktopMap;
+
+                    for (var key in UserDesktopMap) {
+
+//                        if(key  == userName){
+//                            continue;
+//                        }
+
+                        var deskCards = UserDesktopMap[key];
+
+                        //处理桌牌列表
+                        var deskCardsLi = "";
+                        for(var i =0;i<deskCards.length;i++){
+                            deskCardsLi += "<li class='card-in-desk' data-id='"+deskCards[i]._id+"'>"+deskCards[i]._number+"</li>";
+                        }
+
+                        $('.username[data-username='+key+'] ').parent().children('.desk').children('ul').empty().append(deskCardsLi);
+
+
+                    }
+                }
+
+            });
+
+        };
+
+        $("ul.cards-ul").delegate("li", "click", function () {
+            //如果是点击的手中的扑克
+            if($(this).hasClass('card-in-hand')){
+                $(this).toggleClass('checked');
+            }else{
+                //从其它地方点的扑克，默认加到自己面板上，点击回收后进行回收操作
+                var currentUserDesk = $('#player1 .desk .cards-ul');
+                //console.info(currentUserDesk);
+                $(this).detach().appendTo($(currentUserDesk));
+
+            }
+        });
+
+
+
+    });
+
+
+	
+	
+</script>
+</html>
